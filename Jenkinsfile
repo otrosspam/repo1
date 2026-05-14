@@ -112,16 +112,20 @@ pipeline {
                 echo "============================================"
 
                 sh """
-                    python3 -m pytest tests/ \\
-                        --verbose \\
-                        --tb=short \\
-                        --cov=src \\
-                        --cov-report=xml:${REPORTS_DIR}/coverage.xml \\
-                        --cov-report=html:${REPORTS_DIR}/coverage_html \\
-                        --cov-report=term-missing \\
-                        --cov-fail-under=${COVERAGE_THRESHOLD} \\
-                        --junitxml=${REPORTS_DIR}/test_results.xml
-                """
+    # Activar entorno virtual
+    . venv/bin/activate
+
+    # Ejecutar pruebas
+    python -m pytest tests/ \
+    --verbose \
+    --tb=short \
+    --cov=src \
+    --cov-report=xml:reports/coverage.xml \
+    --cov-report=html:reports/coverage_html \
+    --cov-report=term-missing \
+    --cov-fail-under=75 \
+    --junitxml=reports/test_results.xml
+"""
             }
 
             // Publica los resultados de pruebas en la interfaz de Jenkins
