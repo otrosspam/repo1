@@ -80,27 +80,25 @@ pipeline {
         // STAGE 2: Preparar entorno Python
         // Instala las dependencias del proyecto usando pip.
         // ────────────────────────────────────────────────────
-        stage("2 · Preparar entorno") {
-            steps {
-                echo "============================================"
-                echo " Instalando dependencias de Python..."
-                echo "============================================"
+        stage('2 · Preparar entorno') {
+    steps {
+        sh '''
+        python3 --version
 
-                sh """
-                    # Verifica la versión de Python disponible
-                    python3 --version
+        # Crear entorno virtual
+        python3 -m venv venv
 
-                    # Instala las dependencias listadas en requirements.txt
-                    # --no-cache-dir evita problemas de disco en contenedores
-                    pip3 install --no-cache-dir -r requirements.txt
+        # Activar entorno
+        . venv/bin/activate
 
-                    # Crea la carpeta de reportes si no existe
-                    mkdir -p ${REPORTS_DIR}
+        # Actualizar pip
+        pip install --upgrade pip
 
-                    echo "Dependencias instaladas correctamente."
-                """
-            }
-        }
+        # Instalar dependencias
+        pip install --no-cache-dir -r requirements.txt
+        '''
+    }
+}
 
         // ────────────────────────────────────────────────────
         // STAGE 3: Pruebas unitarias + Cobertura
